@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package billpaymentproject;
+import java.math.BigDecimal;
 import java.util.*;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -15,14 +16,14 @@ import java.time.ZoneId;
  */
 public class Payment {
     private int serial;
-    private double amount;
+    private BigDecimal amount;
     private String description;
     private int status;
     private java.sql.Date payment_date;
     private int payee_serial;
     
     Payment(){
-        amount=0.00;
+        amount=BigDecimal.ZERO;
         description=null;
         status=0;
         LocalDate todayLocalDate = LocalDate.now( ZoneId.of( "America/Los_Angeles" ) );
@@ -31,7 +32,7 @@ public class Payment {
     
     Payment(String description,
             int status,
-            double amount,
+            BigDecimal amount,
             int payee_serial){
         this.amount=amount;
         this.description=description;
@@ -44,7 +45,7 @@ public class Payment {
     Payment(String description,
             java.sql.Date payment_date,
             int status,
-            double amount,
+            BigDecimal amount,
             int payee_serial){
         this.amount=amount;
         this.description=description;
@@ -56,7 +57,7 @@ public class Payment {
     Payment(Database db,
             String description,
             int status,
-            double amount,
+            BigDecimal amount,
             String payee_name){
         this.amount=amount;
         this.description=description;
@@ -78,7 +79,7 @@ public class Payment {
             String description,
             java.sql.Date payment_date,
             int status,
-            double amount,
+            BigDecimal amount,
             String payee_name){
         this.amount=amount;
         this.description=description;
@@ -100,8 +101,9 @@ public class Payment {
         this.description=rset.getString("description");
         this.payment_date=rset.getDate("payment_date");
         this.status=rset.getInt("status");
-        this.amount=rset.getDouble("amount");
+        this.amount=rset.getBigDecimal("amount");
         this.payee_serial=rset.getInt("payee_serial");
+        rset.close();
     }
 
     public void insert(Database db) throws Exception{
@@ -129,7 +131,7 @@ public class Payment {
       }
       sqlText=sqlText+Integer.toString(this.status);
       sqlText=sqlText+",";
-      sqlText=sqlText+Double.toString(this.amount);
+      sqlText=sqlText+this.amount;
       sqlText=sqlText+",";
       if (this.payee_serial!=0)
           sqlText=sqlText+Integer.toString(this.payee_serial);
@@ -163,11 +165,11 @@ public class Payment {
         this.description=description;
     }
     
-    public double getAmount(){
+    public BigDecimal getAmount(){
         return this.amount;
     }
     
-    public void setAmount(double amount){
+    public void setAmount(BigDecimal amount){
         this.amount=amount;
     }
     
@@ -183,7 +185,7 @@ public class Payment {
         return this.serial;
     }
     
-    public int findOrAddPayeeSerial(Database db,String name) throws Exception{
+    public static int findOrAddPayeeSerial(Database db,String name) throws Exception{
         //db.connect();
         int serial;
         Statement stmt=db.createStatement();
@@ -202,6 +204,8 @@ public class Payment {
          else
              serial=-1;
         }
+        stmt.close();
+        rset.close();
          return serial;
     }
 }

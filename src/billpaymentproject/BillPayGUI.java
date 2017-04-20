@@ -5,17 +5,22 @@
  */
 package billpaymentproject;
 
-import javax.swing.JComboBox;
-import billpaymentproject.Payee.*;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFormattedTextField;
+import static javax.swing.JOptionPane.showMessageDialog;
 /**
  *
  * @author Ricky
  */
 public class BillPayGUI extends javax.swing.JFrame {
-    private Database db;
+    private final Database db;
     /**
      * Creates new form BillPayGUI
+     * @param db
      */
     public BillPayGUI(Database db) {
         this.db=db;
@@ -31,19 +36,40 @@ public class BillPayGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        entityManager = java.beans.Beans.isDesignTime() ? null : javax.persistence.Persistence.createEntityManagerFactory("billpay?zeroDateTimeBehavior=convertToNullPU").createEntityManager();
+        payment_1Query = java.beans.Beans.isDesignTime() ? null : entityManager.createQuery("SELECT p FROM Payment_1 p");
+        payment_1List = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : payment_1Query.getResultList();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        paymentDescription = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        long millis=System.currentTimeMillis();  
+        java.sql.Date date=new java.sql.Date(millis);
+        paymentDate = new JFormattedTextField(format);
         jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        paymentAmount = new javax.swing.JTextField();
+        isPaid = new javax.swing.JCheckBox();
         jLabel4 = new javax.swing.JLabel();
-        DefaultComboBoxModel model = new DefaultComboBoxModel(Payee.getPayeeNames(this.db).toArray());
-        jComboBox2 = new javax.swing.JComboBox<>();
+        DefaultComboBoxModel model = new DefaultComboBoxModel(Payee.getPayeeArray(this.db).toArray());
+        paymentPayeeName = new javax.swing.JComboBox<>();
+        addPaymentButton = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        payeeDescription = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        payeeName = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        DefaultComboBoxModel model_2 = new DefaultComboBoxModel(PayeeType.getPayeeTypeArray(this.db).toArray());
+        payeeTypeName = new javax.swing.JComboBox<>();
+        addPayeeButton = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        payeeTypeDescription = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        payeeTypeCode = new javax.swing.JTextField();
+        addPayeeTypeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,29 +91,42 @@ public class BillPayGUI extends javax.swing.JFrame {
 
         jLabel1.setText("Description:");
 
-        jTextField1.setToolTipText("Enter the payment description");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        paymentDescription.setToolTipText("Enter the payment description");
+        paymentDescription.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                paymentDescriptionActionPerformed(evt);
             }
         });
 
         jLabel2.setText("Payment Date:");
 
-        jTextField2.setToolTipText("Date payment was made");
+        paymentDate.setText(date.toString());
+        paymentDate.setToolTipText("Date payment was made");
 
         jLabel3.setText("Amount:");
 
-        jCheckBox1.setText("Paid?");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        isPaid.setText("Paid?");
+        isPaid.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                isPaidActionPerformed(evt);
             }
         });
 
         jLabel4.setText("Payee:");
 
-        jComboBox2.setModel(model);
+        paymentPayeeName.setModel(model);
+        paymentPayeeName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paymentPayeeNameActionPerformed(evt);
+            }
+        });
+
+        addPaymentButton.setText("Add Payment");
+        addPaymentButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addPaymentButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -96,24 +135,27 @@ public class BillPayGUI extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBox1))
+                    .addComponent(isPaid))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(paymentDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 89, Short.MAX_VALUE))
+                        .addComponent(paymentPayeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(paymentDate, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(paymentAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(addPaymentButton))
+                .addGap(0, 390, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,31 +163,122 @@ public class BillPayGUI extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(paymentAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(paymentDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(paymentDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
+                    .addComponent(isPaid)
                     .addComponent(jLabel4)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 139, Short.MAX_VALUE))
+                    .addComponent(paymentPayeeName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addPaymentButton))
+                .addGap(0, 25, Short.MAX_VALUE))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Add Payee", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+
+        jLabel5.setText("Description:");
+
+        payeeDescription.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                payeeDescriptionActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Name:");
+
+        jLabel7.setText("Payee Type:");
+
+        payeeTypeName.setModel(model_2);
+
+        addPayeeButton.setText("Add Payee");
+        addPayeeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addPayeeButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel7))
+                .addGap(34, 34, 34)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(payeeDescription)
+                    .addComponent(payeeTypeName, 0, 179, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(payeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(addPayeeButton)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 199, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(payeeDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)
+                        .addComponent(payeeName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(addPayeeButton))
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(payeeTypeName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Add Payee Type", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
+
+        jLabel8.setText("Description:");
+
+        jLabel9.setText("Code:");
+
+        addPayeeTypeButton.setText("Add Payee Type");
+        addPayeeTypeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addPayeeTypeButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(jLabel8)
+                .addGap(37, 37, 37)
+                .addComponent(payeeTypeDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel9)
+                .addGap(52, 52, 52)
+                .addComponent(payeeTypeCode, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(addPayeeTypeButton)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(payeeTypeDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(payeeTypeCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addPayeeTypeButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -157,27 +290,190 @@ public class BillPayGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void paymentDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentDescriptionActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_paymentDescriptionActionPerformed
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+    private void isPaidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_isPaidActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    }//GEN-LAST:event_isPaidActionPerformed
+
+    private void payeeDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_payeeDescriptionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_payeeDescriptionActionPerformed
+
+    @SuppressWarnings("null")
+    private void addPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPaymentButtonActionPerformed
+        boolean valid=true;
+        String errorText=null;
+        String description=paymentDescription.getText();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date date=null;
+        java.sql.Date payDate=null;
+        BigDecimal currencyAmount=BigDecimal.ZERO;
+        String paymentText=paymentAmount.getText();
+        boolean paidStatus=isPaid.isSelected();
+        String payeeNameText=paymentPayeeName.getSelectedItem().toString();
+        int serial=0;
+        if (description.isEmpty()){
+            valid=false;
+            errorText="Description cannot be blank";
+        }
+        if (valid){
+         try{
+         SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
+         dateFormat.setLenient(false);
+         date=dateFormat.parse(paymentDate.getText(),new ParsePosition(0));
+         }
+         //catch (ParseException pe){
+         //    errorText="Unable to parse Date "+paymentDate;
+         //    valid=false;
+        // }
+         catch (Exception e){
+             errorText="Invalid date "+paymentDate;
+             valid=false;
+         }
+        }
+        if (valid && date==null){
+            valid=false;
+            errorText="Invalid date";
+        }
+        if (valid && paymentText.isEmpty()){
+            valid=false;
+            errorText="Payment amount cannot be blank";
+        }
+        else if (valid){
+         payDate = new java.sql.Date(date.getTime());
+         currencyAmount = new BigDecimal(paymentText);
+        }
+        try{
+         serial=Payment.findOrAddPayeeSerial(this.db,payeeNameText);
+        }
+         catch (Exception e){
+             errorText="Unable to find/add payee ";
+             valid=false;
+         }
+        if (!valid)
+            showMessageDialog(null,errorText);
+        else{         
+         Payment payment=new Payment();
+         payment.setDescription(description);
+         payment.setAmount(currencyAmount);
+         payment.setDate(payDate);
+         if (paidStatus)
+             payment.setStatus(1);
+         payment.setPayeeSerial(serial);
+         try{
+          payment.insert(this.db);
+          showMessageDialog(null,"Inserted Payment- \nDescription="+description+" \nAmount="+currencyAmount);
+         }
+         catch (Exception e){
+             showMessageDialog(null,"Unable to insert payment");
+         }
+        }
+    }//GEN-LAST:event_addPaymentButtonActionPerformed
+
+    private void paymentPayeeNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentPayeeNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_paymentPayeeNameActionPerformed
+
+    private void addPayeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPayeeButtonActionPerformed
+        String description=payeeDescription.getText();
+        String name=payeeName.getText();
+        String payeeTypeDescriptionText=payeeTypeName.getSelectedItem().toString();
+        Payee payee= new Payee();
+        payee.setDescription(description);
+        payee.setName(name);
+        boolean valid=true;
+        String errorText=null;
+        if (description.isEmpty() || name.isEmpty()){
+            errorText="Payee Description and Name cannot be blank";
+            valid=false;
+        }
+        else if (!payee.isValid(this.db)){
+            errorText="Payee already exists in database";
+            valid=false;
+        }
+        else{
+         try{
+         int serial;
+         serial=payee.findPayeeTypeSerialByDesc(this.db,payeeTypeDescriptionText);
+         payee.setPayeeTypeSerial(serial);
+         }
+         catch (Exception e){
+             errorText="Unable to find payee type";
+             valid=false;
+         }
+        }
+        
+        if (!valid)
+            showMessageDialog(null,errorText);
+        else{
+           try{
+            payee.insert(this.db);
+            paymentPayeeName.addItem(name);
+            showMessageDialog(null,"Inserted Payee- \nname="+name+" \nDescription="+description);
+           } 
+           catch(Exception e){
+             showMessageDialog(null,"Unable to insert Payee ");
+           }
+        }
+        
+        
+    }//GEN-LAST:event_addPayeeButtonActionPerformed
+
+    private void addPayeeTypeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addPayeeTypeButtonActionPerformed
+        String name=payeeTypeDescription.getText();
+        String code=payeeTypeCode.getText();
+        PayeeType payeeType=new PayeeType();
+        payeeType.setDescription(name);
+        payeeType.setCode(code);
+        boolean valid=true;
+        String errorText=null;
+        if (name.isEmpty() || code.isEmpty()){
+            errorText="PayeeType Description and Name cannot be blank";
+            valid=false;
+        }
+        else if (code.length()!=2){
+            errorText="Code must be 2 characters";
+            valid=false;
+        }
+        else if (!payeeType.isValid(this.db)){
+          errorText="PayeeType already exists in database";
+          valid=false;
+        }
+                 
+        if (!valid)
+             showMessageDialog(null,errorText);
+        else{
+          
+         try{
+          payeeType.insert(this.db);
+          payeeTypeName.addItem(name);
+          showMessageDialog(null,"Inserted PayeeType- \nname="+name+" \nCode="+code);
+         }
+         catch(Exception e){
+             showMessageDialog(null,"Unable to insert Payee Type");
+         }
+        }           
+    }//GEN-LAST:event_addPayeeTypeButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -219,22 +515,40 @@ public class BillPayGUI extends javax.swing.JFrame {
         }
         catch(Exception e)
         {
-            e.printStackTrace();
-        }    
+            db.close();
+        }
+         
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JButton addPayeeButton;
+    private javax.swing.JButton addPayeeTypeButton;
+    private javax.swing.JButton addPaymentButton;
+    private javax.persistence.EntityManager entityManager;
+    private javax.swing.JCheckBox isPaid;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JTextField payeeDescription;
+    private javax.swing.JTextField payeeName;
+    private javax.swing.JTextField payeeTypeCode;
+    private javax.swing.JTextField payeeTypeDescription;
+    private javax.swing.JComboBox<String> payeeTypeName;
+    private javax.swing.JTextField paymentAmount;
+    private javax.swing.JTextField paymentDate;
+    private javax.swing.JTextField paymentDescription;
+    private javax.swing.JComboBox<String> paymentPayeeName;
+    private java.util.List<billpaymentproject.Payment_1> payment_1List;
+    private javax.persistence.Query payment_1Query;
     // End of variables declaration//GEN-END:variables
 }

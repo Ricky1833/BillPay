@@ -5,8 +5,10 @@
  */
 package billpaymentproject;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -54,6 +56,7 @@ public class Payee {
         this.name=rset.getString("name");
         this.description=rset.getString("description");
         this.payee_type_serial=rset.getInt("payee_type_serial");
+        rset.close();
     }
     
     public void insert(Database db) throws Exception{
@@ -80,7 +83,6 @@ public class Payee {
           sqlText=sqlText+Integer.toString(this.payee_type_serial);
       sqlText=sqlText+")";
       stmt.executeUpdate(sqlText);
-      //System.out.println(sqlText);
       stmt.close();
     }
     public String getName(){
@@ -107,21 +109,102 @@ public class Payee {
         return this.payee_type_serial;
     }
     
+    public void setPayeeTypeSerial(int serial){
+        this.payee_type_serial=serial;
+    }
+    
     public void setPayeeTypeSerial(Database db,String code) throws Exception{
         int serial=findPayeeTypeSerial(db,code);
         this.payee_type_serial=serial;
     }
     
-    public int findPayeeTypeSerial(Database db,String code) throws Exception{
+    public static int findPayeeTypeSerial(Database db,String code) throws Exception{
+        //db.connect();
+        int typeSerial;
+        Statement stmt=db.createStatement();
+        ResultSet rset=stmt.executeQuery("select serial from payee_type where code='"+code+"'");
+        if (rset.next()){
+         typeSerial=rset.getInt("serial");
+        }
+        else
+         typeSerial=-1;
+        stmt.close();
+        rset.close();
+         return typeSerial;
+    }
+    
+    
+    public int findPayeeTypeSerialByDesc(Database db,String desc) throws Exception{
         //db.connect();
         int serial;
         Statement stmt=db.createStatement();
-        ResultSet rset=stmt.executeQuery("select serial from payee_type where code='"+code+"'");
+        ResultSet rset=stmt.executeQuery("select serial from payee_type where description='"+desc+"'");
         if (rset.next()){
          serial=rset.getInt("serial");
         }
         else
          serial=-1;
+        stmt.close();
+        rset.close();
          return serial;
+    }
+    
+    
+    
+    public static ArrayList<String> getPayeeArray(Database db) {
+        ArrayList<String> list = new ArrayList<>();
+        String query="SELECT name FROM payee ORDER BY name";
+        try{
+        PreparedStatement stmt=db.prepareStatement(query);
+        ResultSet rset=stmt.executeQuery(query);
+        while (rset.next()) { 
+            String payeeName = rset.getString("name"); 
+            // add group names to the array list
+            if (!payeeName.isEmpty())
+             list.add(payeeName);
+        } 
+        stmt.close();
+        rset.close(); 
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+   public static String getPayeeName(Database db,int serial) {
+    String query="Select name from payee where serial="+serial; 
+    String payeeName=null;
+    try{
+        PreparedStatement stmt=db.prepareStatement(query);
+        ResultSet rset=stmt.executeQuery(query);
+        if (rset.next()){
+            payeeName=rset.getString("name");
+        }
+        rset.close();
+        stmt.close();
+    }
+    catch(Exception e){
+        e.printStackTrace();
+    }
+    return payeeName;
+   }
+
+    boolean isValid(Database db) {
+       boolean valid=true;
+        String query="Select * From payee where name='"+this.name+"'";
+        try{
+        PreparedStatement stmt=db.prepareStatement(query);
+        ResultSet rset=stmt.executeQuery(query);
+        if  (rset.next()) { 
+          valid=false;
+        } 
+        rset.close(); 
+        stmt.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return valid;
     }
 }
